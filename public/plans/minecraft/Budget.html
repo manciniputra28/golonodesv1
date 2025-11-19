@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO & Meta Tags -->
+    <title>Budget Minecraft Hosting - GoloNodes</title>
+    <meta name="description" content="Affordable Minecraft hosting starting at ₹90/mo. Shared resources perfect for small communities and friends.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="/assets/images/favicon.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        bgDark: '#0D0816',
+                        cardDark: '#130d21',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(236, 72, 153, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0D0816; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ec4899; }
+        body { background-color: #0D0816; margin: 0; -webkit-font-smoothing: antialiased; }
+        .glass-panel {
+            background: rgba(19, 13, 33, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const DISCORD_LINK = "https://discord.gg/2SF5qyM5xc";
+
+        // --- HELPER COMPONENTS ---
+        const toPascalCase = (str) => str.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+        
+        const Icon = ({ name, className, size = 24 }) => {
+            const iconRef = useRef(null);
+            useEffect(() => {
+                const pascalName = toPascalCase(name);
+                if (iconRef.current && window.lucide && window.lucide.icons[pascalName]) {
+                    const iconElement = window.lucide.icons[pascalName];
+                    iconRef.current.innerHTML = '';
+                    const svg = window.lucide.createElement(iconElement);
+                    svg.setAttribute('class', className);
+                    svg.setAttribute('width', size);
+                    svg.setAttribute('height', size);
+                    iconRef.current.appendChild(svg);
+                }
+            }, [name, className, size]);
+            return <span ref={iconRef} className="inline-flex items-center justify-center" />;
+        };
+
+        const DiscordIcon = ({ className }) => (
+            <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419z"/>
+            </svg>
+        );
+
+        // Dropdown Item
+        function DropdownItem({ title, iconName, active, badge, link }) {
+            return (
+                <a 
+                href={active ? link : undefined} 
+                className={`group/item flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${active ? 'hover:bg-white/5 cursor-pointer' : 'cursor-not-allowed opacity-50 grayscale'}`}
+                >
+                    <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center border border-white/5 transition-colors ${active ? 'bg-white/5 group-hover/item:bg-pink-500/20 group-hover/item:border-pink-500/30' : 'bg-white/5'}`}>
+                        <Icon name={iconName} className={`w-4 h-4 ${active ? 'text-slate-400 group-hover/item:text-pink-400' : 'text-slate-600'}`} />
+                    </div>
+                    <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                            <span className={`text-sm font-semibold ${active ? 'text-slate-200 group-hover/item:text-white' : 'text-slate-600'}`}>
+                                {title}
+                            </span>
+                            {badge && (
+                                <span className="text-[10px] font-bold uppercase tracking-wider bg-white/10 text-slate-500 px-1.5 py-0.5 rounded ml-2">
+                                {badge}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                </a>
+            );
+        }
+
+        // Plan Card Component
+        function PlanCard({ name, ram, cpu, disk, price, color }) {
+            // Color logic
+            let ringColor = 'ring-white/10';
+            let iconColor = 'text-slate-400';
+            let bgGradient = 'from-white/5 to-white/0';
+            
+            if(color === 'dirt') { ringColor = 'ring-yellow-900/50'; iconColor = 'text-yellow-700'; }
+            if(color === 'grass') { ringColor = 'ring-green-600/50'; iconColor = 'text-green-500'; }
+            if(color === 'stone') { ringColor = 'ring-slate-500/50'; iconColor = 'text-slate-400'; }
+            if(color === 'coal') { ringColor = 'ring-gray-700/50'; iconColor = 'text-gray-500'; }
+            if(color === 'iron') { ringColor = 'ring-slate-300/50'; iconColor = 'text-slate-200'; }
+            if(color === 'emerald') { ringColor = 'ring-emerald-500/50'; iconColor = 'text-emerald-400'; }
+            if(color === 'gold') { ringColor = 'ring-yellow-400/50'; iconColor = 'text-yellow-400'; }
+            if(color === 'diamond') { ringColor = 'ring-cyan-400/50'; iconColor = 'text-cyan-400'; }
+            if(color === 'netherite') { ringColor = 'ring-purple-900/50'; iconColor = 'text-purple-500'; bgGradient = 'from-purple-900/20 to-black'; }
+
+            return (
+                <div className={`relative flex flex-col p-6 rounded-2xl bg-[#130d21] border border-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-1 group overflow-hidden`}>
+                    {/* Ambient Glow */}
+                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${bgGradient} opacity-20 rounded-full blur-3xl -mr-10 -mt-10 transition-opacity group-hover:opacity-40`}></div>
+                    
+                    <div className="relative z-10">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-white">{name}</h3>
+                            <div className={`p-2 rounded-lg bg-white/5 ${iconColor}`}>
+                                <Icon name="box" className="w-5 h-5" />
+                            </div>
+                        </div>
+
+                        <div className="flex items-baseline gap-1 mb-6">
+                            <span className="text-sm text-slate-400">₹</span>
+                            <span className="text-3xl font-bold text-white">{price}</span>
+                            <span className="text-slate-500">/mo</span>
+                        </div>
+
+                        <ul className="space-y-3 mb-6">
+                            <li className="flex items-center gap-3 text-sm text-slate-300">
+                                <Icon name="memory-stick" className="w-4 h-4 text-slate-500" />
+                                <span><strong className="text-white">{ram}</strong> RAM</span>
+                            </li>
+                            <li className="flex items-center gap-3 text-sm text-slate-300">
+                                <Icon name="cpu" className="w-4 h-4 text-slate-500" />
+                                <span><strong className="text-white">{cpu}</strong> CPU</span>
+                            </li>
+                            <li className="flex items-center gap-3 text-sm text-slate-300">
+                                <Icon name="hard-drive" className="w-4 h-4 text-slate-500" />
+                                <span><strong className="text-white">{disk}</strong> Disk</span>
+                            </li>
+                        </ul>
+
+                        <a href={DISCORD_LINK} className="w-full py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-bold transition-all flex items-center justify-center gap-2 hover:border-pink-500/30">
+                            Deploy <Icon name="arrow-right" className="w-3 h-3" />
+                        </a>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- MAIN APP ---
+
+        function App() {
+            const [scrolled, setScrolled] = useState(false);
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [pricingHovered, setPricingHovered] = useState(false);
+            const [helpHovered, setHelpHovered] = useState(false);
+
+            useEffect(() => {
+                const handleScroll = () => setScrolled(window.scrollY > 20);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            return (
+                <div className="min-h-screen text-slate-200 font-sans selection:bg-pink-500 selection:text-white overflow-x-hidden">
+                    
+                    {/* Ambient Background */}
+                    <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+                        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-green-900/10 rounded-full blur-[120px]" />
+                        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/10 rounded-full blur-[120px]" />
+                    </div>
+
+                    {/* Navbar Premium (Matching index.html) */}
+                    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0D0816]/80 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20' : 'bg-transparent border-b border-transparent'}`}>
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="relative flex items-center justify-between h-20">
+                            
+                            {/* Logo */}
+                            <a href="/" className="flex-shrink-0 flex items-center cursor-pointer group select-none">
+                                <div className="relative w-10 h-10 transition-transform duration-300 group-hover:scale-105">
+                                    <img 
+                                    src="/assets/images/favicon.png" 
+                                    alt="GoloNodes Logo" 
+                                    onError={(e) => {e.target.onerror = null; e.target.src = 'https://placehold.co/40x40/ec4899/white?text=GN'}}
+                                    className="relative w-full h-full object-contain"
+                                    />
+                                </div>
+                            </a>
+
+                            {/* Desktop Menu */}
+                            <div className="hidden md:flex items-center space-x-1 absolute left-1/2 transform -translate-x-1/2">
+                                <a href="/status" className="px-4 py-2 rounded-full hover:bg-white/5 text-sm font-medium text-slate-300 hover:text-white transition-all">Status</a>
+                                
+                                {/* Pricing Mega Dropdown Trigger */}
+                                <div 
+                                    className="relative group h-full flex items-center"
+                                    onMouseEnter={() => setPricingHovered(true)}
+                                    onMouseLeave={() => setPricingHovered(false)}
+                                >
+                                    <button className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${pricingHovered ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}>
+                                    Pricing <Icon name="chevron-down" className={`w-3.5 h-3.5 transition-transform duration-300 ${pricingHovered ? 'rotate-180' : ''}`} />
+                                    </button>
+                                    
+                                    {/* Dropdown Content */}
+                                    <div className={`absolute top-full left-1/2 -translate-x-1/2 w-[600px] pt-4 transition-all duration-300 transform origin-top ${pricingHovered ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+                                        <div className="glass-panel rounded-2xl shadow-2xl shadow-black/80 overflow-hidden p-1">
+                                            <div className="bg-[#0D0816]/80 rounded-xl p-6 grid grid-cols-2 gap-6">
+                                                {/* Kolom Virtual Server */}
+                                                <div className="space-y-1">
+                                                    <div className="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest mb-3 pl-3 flex items-center gap-2">
+                                                        <Icon name="cpu" className="w-3.5 h-3.5" /> Virtual Server
+                                                    </div>
+                                                    <DropdownItem title="Cheap KVM VPS" iconName="zap" active link="/plans/virtual-server/budget" />
+                                                    <DropdownItem title="Premium KVM VPS" iconName="flame" active link="/plans/virtual-server/premium" />
+                                                    <DropdownItem title="Storage VPS" iconName="hard-drive" badge="Soon" />
+                                                </div>
+                                                
+                                                {/* Kolom Minecraft */}
+                                                <div className="space-y-1">
+                                                    <div className="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest mb-3 pl-3 flex items-center gap-2">
+                                                        <div className="w-3.5 h-3.5 bg-green-500/20 rounded border border-green-500/40 flex items-center justify-center"><div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div></div> Minecraft
+                                                    </div>
+                                                    <DropdownItem title="Budget Server" iconName="gamepad-2" active link="/plans/minecraft/budget" />
+                                                    <DropdownItem title="Premium Server" iconName="crown" active link="/plans/minecraft/premium" />
+                                                    <DropdownItem title="Extreme Server" iconName="swords" badge="Soon" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Help Dropdown */}
+                                <div 
+                                    className="relative group h-full flex items-center"
+                                    onMouseEnter={() => setHelpHovered(true)}
+                                    onMouseLeave={() => setHelpHovered(false)}
+                                >
+                                    <button className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${helpHovered ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}>
+                                    Help <Icon name="chevron-down" className={`w-3.5 h-3.5 transition-transform duration-300 ${helpHovered ? 'rotate-180' : ''}`} />
+                                    </button>
+                                    
+                                    {/* Dropdown Content */}
+                                    <div className={`absolute top-full left-1/2 -translate-x-1/2 w-[250px] pt-4 transition-all duration-300 transform origin-top ${helpHovered ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+                                        <div className="glass-panel rounded-2xl shadow-2xl shadow-black/80 overflow-hidden p-1">
+                                            <div className="bg-[#0D0816]/80 rounded-xl p-2 space-y-1">
+                                                <a href="https://kb.golonodes.cloud" className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors group/item">
+                                                    <Icon name="book" className="w-4 h-4 text-slate-400 group-hover/item:text-pink-400" />
+                                                    <span className="text-sm font-medium text-slate-300 group-hover/item:text-white">Knowledge Base</span>
+                                                </a>
+                                                <a href={DISCORD_LINK} className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors group/item">
+                                                    <DiscordIcon className="w-4 h-4 text-slate-400 group-hover/item:text-[#5865F2]" />
+                                                    <span className="text-sm font-medium text-slate-300 group-hover/item:text-white">Discord Support</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a href="/aboutus" className="px-4 py-2 rounded-full hover:bg-white/5 text-sm font-medium text-slate-300 hover:text-white transition-all">About</a>
+                            </div>
+
+                            {/* Desktop CTA & Icons */}
+                            <div className="hidden md:flex items-center gap-3 ml-auto">
+                                <a href={DISCORD_LINK} className="w-10 h-10 flex items-center justify-center rounded-xl border border-white/5 bg-white/5 text-slate-400 hover:text-white hover:bg-[#5865F2] hover:border-[#5865F2] transition-all duration-200" title="Join Community">
+                                    <DiscordIcon className="w-5 h-5" />
+                                </a>
+                                <a href={DISCORD_LINK} className="w-10 h-10 flex items-center justify-center rounded-xl border border-white/5 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200" title="Login">
+                                    <Icon name="log-in" className="w-5 h-5" />
+                                </a>
+                                <a href={DISCORD_LINK} className="h-10 px-6 rounded-xl bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white border border-white/10 text-sm font-semibold transition-all duration-200 hover:border-pink-500/50 hover:shadow-glow flex items-center group ml-1">
+                                    Get Started
+                                    <Icon name="chevron-right" className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                                </a>
+                            </div>
+
+                            {/* Mobile menu button */}
+                            <div className="md:hidden flex items-center gap-4 ml-auto">
+                                <a href={DISCORD_LINK} className="text-slate-400 hover:text-white">
+                                    <Icon name="log-in" className="w-5 h-5" />
+                                </a>
+                                <button
+                                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                    className="text-slate-300 hover:text-white p-2"
+                                >
+                                    {isMenuOpen ? <Icon name="x" className="w-6 h-6" /> : <Icon name="menu" className="w-6 h-6" />}
+                                </button>
+                            </div>
+                        </div>
+                        </div>
+
+                        {/* Mobile Menu */}
+                        {isMenuOpen && (
+                        <div className="md:hidden bg-[#0D0816] border-b border-white/10 backdrop-blur-xl">
+                            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                            <a href="/status" className="text-slate-300 hover:text-pink-400 block px-3 py-2 rounded-md font-medium">Status</a>
+                            <div className="px-3 py-2 text-slate-500 font-medium text-sm uppercase mt-2">Pricing</div>
+                            <a href="/plans/virtual-server/budget" className="text-slate-300 hover:text-pink-400 block px-3 py-2 rounded-md pl-6 bg-white/5 mb-1">KVM VPS</a>
+                            <a href="/plans/minecraft/budget" className="text-slate-300 hover:text-pink-400 block px-3 py-2 rounded-md pl-6 bg-white/5">Minecraft Hosting</a>
+                            <div className="px-3 py-2 text-slate-500 font-medium text-sm uppercase mt-2">Help</div>
+                            <a href="https://kb.golonodes.cloud" className="text-slate-300 hover:text-pink-400 block px-3 py-2 rounded-md pl-6">Knowledge Base</a>
+                            <a href={DISCORD_LINK} className="text-slate-300 hover:text-pink-400 block px-3 py-2 rounded-md pl-6">Discord Support</a>
+                            <a href="/aboutus" className="text-slate-300 hover:text-pink-400 block px-3 py-2 rounded-md font-medium mt-2">About</a>
+                            
+                            <div className="mt-4 pt-4 border-t border-white/10">
+                                <a href={DISCORD_LINK} className="w-full flex items-center justify-center gap-2 text-slate-300 py-2 hover:text-[#5865F2]">
+                                <DiscordIcon className="w-5 h-5" /> Join Discord
+                                </a>
+                            </div>
+                            </div>
+                        </div>
+                        )}
+                    </nav>
+
+                    {/* Hero Section */}
+                    <header className="relative pt-48 pb-16 text-center px-4">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-sm">
+                            <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                            <span className="text-xs font-bold text-green-400 uppercase tracking-widest">Shared Resource</span>
+                        </div>
+                        <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight">
+                            Budget <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">Minecraft Plans</span>
+                        </h1>
+                        <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                            Affordable performance for your community. Start your journey with our cost-effective shared resource plans.
+                        </p>
+                    </header>
+
+                    {/* Plans Grid */}
+                    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <PlanCard name="Dirt Plan" ram="2GB" cpu="100%" disk="5GB" price="90" color="dirt" />
+                            <PlanCard name="Grass Plan" ram="4GB" cpu="150%" disk="10GB" price="180" color="grass" />
+                            <PlanCard name="Stone Plan" ram="6GB" cpu="200%" disk="15GB" price="270" color="stone" />
+                            <PlanCard name="Coal Plan" ram="8GB" cpu="250%" disk="20GB" price="360" color="coal" />
+                            <PlanCard name="Iron Plan" ram="10GB" cpu="300%" disk="35GB" price="450" color="iron" />
+                            <PlanCard name="Emerald Plan" ram="12GB" cpu="350%" disk="45GB" price="540" color="emerald" />
+                            <PlanCard name="Gold Plan" ram="14GB" cpu="400%" disk="60GB" price="630" color="gold" />
+                            <PlanCard name="Diamond Plan" ram="16GB" cpu="450%" disk="180GB" price="720" color="diamond" />
+                            <PlanCard name="Netherite Plan" ram="32GB" cpu="500%" disk="256GB" price="1,440" color="netherite" />
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="border-t border-white/10 bg-[#0a0118] pt-16 pb-8">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+                                <div className="col-span-2 md:col-span-1">
+                                    <a href="/" className="flex items-center gap-3 mb-6 inline-block group">
+                                        <div className="w-16 h-16 transition-transform duration-300 group-hover:scale-105">
+                                            <img 
+                                                src="/assets/images/favicon.png" 
+                                                alt="GoloNodes Logo" 
+                                                onError={(e) => {e.target.onerror = null; e.target.src = 'https://placehold.co/64x64/ec4899/white?text=GN'}}
+                                                className="w-full h-full object-contain"
+                                            />
+                                        </div>
+                                    </a>
+                                    <p className="text-slate-500 text-sm leading-relaxed">
+                                        Redefining cloud hosting with enterprise-grade performance at an affordable price point.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h3 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Public Cloud</h3>
+                                    <ul className="space-y-3 text-sm text-slate-400">
+                                        <li><a href="/plans/virtual-server/budget" className="hover:text-pink-400 transition-colors flex items-center gap-2">Cheap VPS</a></li>
+                                        <li><a href="/plans/virtual-server/premium" className="hover:text-pink-400 transition-colors flex items-center gap-2">Premium VPS</a></li>
+                                        <li><span className="text-slate-600 cursor-not-allowed flex items-center gap-2">Storage VPS <span className="text-[9px] bg-white/5 border border-white/10 rounded px-1 py-0.5 text-slate-500">SOON</span></span></li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Game Hosting</h3>
+                                    <ul className="space-y-3 text-sm text-slate-400">
+                                        <li><a href="/plans/minecraft/budget" className="hover:text-pink-400 transition-colors flex items-center gap-2">Budget Minecraft</a></li>
+                                        <li><a href="/plans/minecraft/premium" className="hover:text-pink-400 transition-colors flex items-center gap-2">Premium Minecraft</a></li>
+                                        <li><span className="text-slate-600 cursor-not-allowed flex items-center gap-2">Extreme Server <span className="text-[9px] bg-white/5 border border-white/10 rounded px-1 py-0.5 text-slate-500">SOON</span></span></li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Support</h3>
+                                    <ul className="space-y-3 text-sm text-slate-400">
+                                        <li><a href={DISCORD_LINK} className="hover:text-pink-400 transition-colors flex items-center gap-2">Discord Community</a></li>
+                                        <li><a href="https://kb.golonodes.cloud" className="hover:text-pink-400 transition-colors flex items-center gap-2">Knowledge Base</a></li>
+                                        <li><a href={DISCORD_LINK} className="hover:text-pink-400 transition-colors flex items-center gap-2">Open Support Ticket</a></li>
+                                        <li><a href={DISCORD_LINK} className="hover:text-pink-400 transition-colors flex items-center gap-2">View Support Tickets</a></li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <h3 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Agreements</h3>
+                                    <ul className="space-y-3 text-sm text-slate-400">
+                                        <li><a href="https://www.minecraft.net/en-us/eula" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 transition-colors flex items-center gap-2">Minecraft EULA</a></li>
+                                        <li><a href="/legal/termsofservice" className="hover:text-pink-400 transition-colors flex items-center gap-2">Terms of Service</a></li>
+                                        <li><a href="/legal/privacypolicy" className="hover:text-pink-400 transition-colors flex items-center gap-2">Privacy Policy</a></li>
+                                        <li><a href="/legal/refundpolicy" className="hover:text-pink-400 transition-colors flex items-center gap-2">Refund Policy</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center">
+                                <p className="text-slate-600 text-sm">
+                                    © 2024 GoloNodes Inc. All rights reserved.
+                                </p>
+                                <div className="flex gap-4 mt-4 md:mt-0">
+                                    <a href={DISCORD_LINK} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 hover:bg-[#5865F2] hover:text-white text-slate-500 transition-all"><DiscordIcon className="w-4 h-4" /></a>
+                                    <a href="#" className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 hover:bg-pink-500 hover:text-white text-slate-500 transition-all"><Icon name="twitter" className="w-4 h-4" /></a>
+                                    <a href="#" className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 hover:bg-pink-500 hover:text-white text-slate-500 transition-all"><Icon name="github" className="w-4 h-4" /></a>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

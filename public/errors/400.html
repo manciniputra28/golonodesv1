@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>400 Bad Request - GoloNodes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #0D0816; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen overflow-hidden relative">
+    <!-- Ambient Background -->
+    <div class="absolute top-[-20%] left-[-20%] w-[50%] h-[50%] bg-purple-900/10 rounded-full blur-[120px]"></div>
+    <div class="absolute bottom-[-20%] right-[-20%] w-[50%] h-[50%] bg-pink-900/10 rounded-full blur-[120px]"></div>
+
+    <div class="text-center relative z-10">
+        <div class="inline-flex p-4 rounded-full bg-white/5 border border-white/10 mb-6">
+            <i data-lucide="alert-triangle" class="w-8 h-8 text-yellow-500"></i>
+        </div>
+        <h1 class="text-9xl font-bold text-white tracking-tighter mb-4 opacity-20 select-none">400</h1>
+        <h2 class="text-3xl font-bold text-white -mt-16 mb-4 relative z-20">Bad Request</h2>
+        <p class="text-slate-400 max-w-md mx-auto">
+            The server cannot process the request due to a client error (e.g., malformed request syntax).
+        </p>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
